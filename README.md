@@ -1,5 +1,5 @@
 # OUTDROP API
-API para gestão de drops de marcas de roupas - sendo possível cadastrar marcas, produtos e lançamentos.
+API para gerenciamento de drops de marcas de roupas - sendo possível cadastrar marcas, produtos e lançamentos.
 
 
 ## Tecnologias
