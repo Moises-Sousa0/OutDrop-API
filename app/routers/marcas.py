@@ -43,6 +43,6 @@ def deletar_marca(id: int):
     for i in marcas:
         if i["id"] == id:
             marcas.remove(i)
-            return {"message": "Marca deletada com sucesso", "marca": i}
+            return {"message": "Marca deletada com sucesso", "Marca": i}
     else:
         raise HTTPException(status_code=404, detail="Marca não encontrada")
