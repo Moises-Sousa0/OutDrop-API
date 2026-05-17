@@ -28,11 +28,21 @@ def ver_marcas():
 
 #listar marca especifica
 @router.get("/marcas/{id}")
-def buscar_marcar(id: int):
+def buscar_marcas(id: int):
     for i in  marcas:
         if i["id"] == id:
             return i
             
     else:
         raise HTTPException(status_code=404, detail="Marca não encontrada :(") #forma correta de retornar pro fastapi um erro
-    
+
+
+#deletar marca especifica
+@router.delete("/marcas/{id}")
+def deletar_marca(id: int):
+    for i in marcas:
+        if i["id"] == id:
+            marcas.remove(i)
+            return {"message": "Marca deletada com sucesso", "marca": i}
+    else:
+        raise HTTPException(status_code=404, detail="Marca não encontrada")
