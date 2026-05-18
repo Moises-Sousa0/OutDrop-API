@@ -1,6 +1,9 @@
-from datetime import datetime
-from fastapi import APIRouter, HTTPException #agrupa rotas do mesmo recurso
+from fastapi import APIRouter, HTTPException, Depends #agrupa rotas do mesmo recurso
 from pydantic import BaseModel #permite o fastapi validar automaticamente os dados recebidos
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app import models
+
 
 router = APIRouter() #cria um instancia da lib apirouter
  
@@ -8,27 +11,29 @@ class MarcaCreate(BaseModel): #pydanticacho
     nome: str
     descricao: str
 
-marcas = []
 
 @router.post("/marcas") #o @ é um decorator, ele basicamente diz "quando chegar um request POST em /marcas execute essa funcao:"
-def criar_marca(marca: MarcaCreate): #parametro marca pede o padrao da classe marcacreate, nome e descric
-    nova_marca = {
-        "id": len(marcas) + 1,
-        "nome": marca.nome,
-        "descricao": marca.descricao,
-        "created_at": datetime.now().isoformat()
-    }
-    marcas.append(nova_marca)
+def criar_marca(marca: MarcaCreate, db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
+    nova_marca = models.Marca( #Depends é o sistema de injeção de dependencia do fastapi 
+        nome=marca.nome,
+        descricao=marca.descricao
+    )
+    db.add(nova_marca)
+    db.commit()
+    db.refresh(nova_marca)
     return nova_marca
+
 
 #listar todas as marcas
 @router.get("/marcas")
-def ver_marcas():
-    return marcas
+def ver_marcas(db: Session = Depends(get_db)):
+    listar = db.query(models.Marca).all() #SELECT * FROM marcas;
+    return listar
+
 
 #listar marca especifica
 @router.get("/marcas/{id}")
-def buscar_marcas(id: int):
+def buscar_marcas(id: int, db: Session = Depends(get_db)):
     for i in  marcas:
         if i["id"] == id:
             return i
