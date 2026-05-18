@@ -43,10 +43,10 @@ def buscar_marcas(id: int, db: Session = Depends(get_db)):
 
 #deletar marca especifica
 @router.delete("/marcas/{id}")
-def deletar_marca(id: int):
-    for i in marcas:
-        if i["id"] == id:
-            marcas.remove(i)
-            return {"message": "Marca deletada com sucesso", "Marca": i}
-    else:
+def deletar_marca(id: int, db: Session = Depends(get_db)):
+    resultado = db.query(models.Marca).filter(models.Marca.id == id).first()
+    if resultado is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada")
+    db.delete(resultado)
+    db.commit()
+    return {"message": f"Marca {resultado.nome} foi deletada com sucesso!"}
