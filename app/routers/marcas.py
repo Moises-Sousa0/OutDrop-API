@@ -34,13 +34,12 @@ def ver_marcas(db: Session = Depends(get_db)):
 #listar marca especifica
 @router.get("/marcas/{id}")
 def buscar_marcas(id: int, db: Session = Depends(get_db)):
-    for i in  marcas:
-        if i["id"] == id:
-            return i
-            
-    else:
+    resultado = db.query(models.Marca).filter(models.Marca.id == id).first()
+    if resultado is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada :(") #forma correta de retornar pro fastapi um erro
+    return resultado
 
+        
 
 #deletar marca especifica
 @router.delete("/marcas/{id}")
