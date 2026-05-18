@@ -44,17 +44,17 @@ def listar_produtos(db: Session = Depends(get_db)):
 #listar produtos especificos
 @router.get("/produtos/{id}")
 def buscar_produtos(id: int, db: Session = Depends(get_db)):
-    buscar_produtos = db.query(models.Produto).filter(models.Produto.id == id).first()
-    if buscar_produtos is None:
-        raise HTTPException(status_code=404, detail="Marca não encontrada :(")
-    return buscar_produtos
+    ver_produtos = db.query(models.Produto).filter(models.Produto.id == id).first()
+    if ver_produtos is None:
+        raise HTTPException(status_code=404, detail="Produto não encontrado :(")
+    return ver_produtos
 
 #deletar produtos
 @router.delete("/produtos/{id}")
 def deletar_produto(id: int, db: Session = Depends(get_db)):
     escolher_produto = db.query(models.Produto).filter(models.Produto.id == id).first()
     if escolher_produto is None:
-            raise HTTPException(status_code=404, detail="Marca não encontrada :(")
+            raise HTTPException(status_code=404, detail="Produto não encontrado :(")
     db.delete(escolher_produto)
     db.commit()
     return {"message": f"Produto {escolher_produto.nome} foi deletado com sucesso!"}
