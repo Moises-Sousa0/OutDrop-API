@@ -12,7 +12,7 @@ class MarcaCreate(BaseModel): #pydanticacho
     descricao: str
 
 
-@router.post("/marcas") #o @ é um decorator, ele basicamente diz "quando chegar um request POST em /marcas execute essa funcao:"
+@router.post("/marcas", status_code=201) #o @ é um decorator, ele basicamente diz "quando chegar um request POST em /marcas execute essa funcao:"
 def criar_marca(marca: MarcaCreate, db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
     nova_marca = models.Marca( #Depends é o sistema de injeção de dependencia do fastapi 
         nome=marca.nome,
