@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 
-@router.post("/produtos", response_model=schemas.ProdutoResponse)
+@router.post("/produtos", status_code=201, response_model=schemas.ProdutoResponse)
 def criar_produto(produto: schemas.ProdutoCreate, db: Session = Depends(get_db)):
     marca = db.query(models.Marca).filter(models.Marca.id == produto.marca_id).first()
     if marca is None:
@@ -25,7 +25,7 @@ def criar_produto(produto: schemas.ProdutoCreate, db: Session = Depends(get_db))
     db.add(novo_produto)
     db.commit()
     db.refresh(novo_produto)
-    return(novo_produto)
+    return novo_produto
 
 
 #listar todos os produtos
