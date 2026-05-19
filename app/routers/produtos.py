@@ -1,23 +1,17 @@
 from fastapi import APIRouter, HTTPException, Depends #agrupa rotas do mesmo recurso
-from pydantic import BaseModel #permite o fastapi validar automaticamente os dados recebidos
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models
+from app import schemas
 from datetime import datetime
-from decimal import Decimal
+from typing import List
 
 router = APIRouter()
 
-class ProdutoCreate(BaseModel):
-    nome: str
-    descricao: str
-    preco: Decimal
-    data_lancamento: datetime
-    marca_id: int
 
 
-@router.post("/produtos")
-def criar_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
+@router.post("/produtos", response_model=schemas.ProdutoResponse)
+def criar_produto(produto: schemas.ProdutoCreate, db: Session = Depends(get_db)):
     marca = db.query(models.Marca).filter(models.Marca.id == produto.marca_id).first()
     if marca is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada")
@@ -34,15 +28,15 @@ def criar_produto(produto: ProdutoCreate, db: Session = Depends(get_db)):
     return(novo_produto)
 
 
-#listar produtos
-@router.get("/produtos")
+#listar todos os produtos
+@router.get("/produtos", response_model=List[schemas.ProdutoResponse])
 def listar_produtos(db: Session = Depends(get_db)):
-    listar = db.query(models.Produto).all()
-    return listar
+    return db.query(models.Produto).all()
+    
 
 
 #listar produtos especificos
-@router.get("/produtos/{id}")
+@router.get("/produtos/{id}", response_model=schemas.ProdutoResponse)
 def buscar_produtos(id: int, db: Session = Depends(get_db)):
     ver_produtos = db.query(models.Produto).filter(models.Produto.id == id).first()
     if ver_produtos is None:

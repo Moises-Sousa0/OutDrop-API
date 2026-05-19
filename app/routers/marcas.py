@@ -1,19 +1,19 @@
 from fastapi import APIRouter, HTTPException, Depends #agrupa rotas do mesmo recurso
-from pydantic import BaseModel #permite o fastapi validar automaticamente os dados recebidos
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models
+from app import schemas
+from typing import List
+
 
 
 router = APIRouter() #cria um instancia da lib apirouter
  
-class MarcaCreate(BaseModel): #pydanticacho
-    nome: str
-    descricao: str
 
 
-@router.post("/marcas", status_code=201) #o @ é um decorator, ele basicamente diz "quando chegar um request POST em /marcas execute essa funcao:"
-def criar_marca(marca: MarcaCreate, db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
+
+@router.post("/marcas", status_code=201, response_model=schemas.MarcaResponse) #o @ é um decorator, ele basicamente diz "quando chegar um request POST em /marcas execute essa funcao:"
+def criar_marca(marca: schemas.MarcaCreate, db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
     nova_marca = models.Marca( #Depends é o sistema de injeção de dependencia do fastapi 
         nome=marca.nome,
         descricao=marca.descricao
@@ -25,14 +25,12 @@ def criar_marca(marca: MarcaCreate, db: Session = Depends(get_db)): #parametro m
 
 
 #listar todas as marcas
-@router.get("/marcas")
+@router.get("/marcas", response_model=List[schemas.MarcaResponse])
 def ver_marcas(db: Session = Depends(get_db)):
-    listar = db.query(models.Marca).all() #SELECT * FROM marcas;
-    return listar
-
+    return db.query(models.Marca).all()
 
 #listar marca especifica
-@router.get("/marcas/{id}")
+@router.get("/marcas/{id}", response_model=schemas.MarcaResponse)
 def buscar_marcas(id: int, db: Session = Depends(get_db)):
     resultado = db.query(models.Marca).filter(models.Marca.id == id).first()
     if resultado is None:
