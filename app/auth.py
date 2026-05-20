@@ -5,12 +5,12 @@ import os
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALOGRITHM")
+ALGORITHM = os.getenv("ALGORITHM")
 
 
 
 def criar_token(dados: dict):
     payload = dados.copy()
-    expiracao = datetime.utcnow() + timedelta(minutes=30)
+    expiracao = datetime.now() + timedelta(minutes=30)
     payload.update({"exp": expiracao})
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)

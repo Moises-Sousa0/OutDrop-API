@@ -50,3 +50,10 @@ class ProdutoResponse(BaseModel):
     marca_id: int
     class Config:
         from_attributes = True
+
+
+class TokenResponse(BaseModel):
+    access_token: str #string jwt ferada pelo criar_token
+    token_type: str  #sempre bearer
+
+
