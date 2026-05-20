@@ -5,25 +5,31 @@ API para gerenciamento de drops de marcas de roupas - sendo possível cadastrar 
 ## Tecnologias
 - Python
 - FastAPI
-- PostgreSQL (em breve)
+- PostgreSQL 
+- SQLAlchemy & psycopg2
+- Pydantic
+- Passlib (com Bcrypt) & Python-Jose (JWT)
+- Python-dotenv
 
 ## Rotas disponiveis
 - GET /health
 - POST /marcas
+- GET /marcas
+- GET /marcas/{id}
+- PUT /marcas/{id}
+- DELETE /marcas/{id}
+- POST /produtos
+- GET /produtos
+- GET /produtos/{id}
+- PUT /produtos/{id}
+- DELETE /produtos/{id}
+- POST /usuarios
+- POST /login
 
 ## Próximos passos
-- Adicionar banco de dados (PostgreSQL)
-- Adicionar mais rotas
-- Area de login
-- Autenticação JWT
+- Implementar a função verificar_token 
+- Proteger rotas que exigem autenticação 
+- Relacionamentos e autorização
+- Tratamento de erros
+- Deploy 
 
-## Como rodar localmente
-1. Clone o repositório
-2. Crie e ative o ambiente virtual:
-   python -m venv venv
-   venv\Scripts\activate
-3. Instale as dependências:
-   pip install -r requirements.txt
-4. Rode o servidor:
-   uvicorn app.main:app --reload
-5. Acesse a documentação em  http://127.0.0.1:8000/docs
