@@ -1,8 +1,9 @@
-from pydantic import BaseModel 
+from pydantic import BaseModel, Field
 from datetime import datetime
 from decimal import Decimal
 
 #schemas é onde pode configurar oq o usuario pode enviar e controlar oq a API mostra
+#validar dados recebidos com pydantic
 
 #saida e entrada da tabela marcas
 class MarcaCreate(BaseModel): #pydanticacho
@@ -23,7 +24,7 @@ class MarcaResponse(BaseModel):
 class UsuarioCreate(BaseModel):
     nome: str
     email: str
-    senha: str
+    senha: str = Field(min_length=8, max_length=72)
     
 class UsuarioResponse(BaseModel):
     id: int
