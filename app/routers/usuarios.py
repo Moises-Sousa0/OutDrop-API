@@ -37,5 +37,15 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     senha_correta = pwd_context.verify(form_data.password, verififcar_email.hash_senha )
     if not senha_correta:
         raise HTTPException(status_code=401, detail="Usuario ou senha errados")
-    token = auth.criar_token({"sub": verififcar_email.id})
+    token = auth.criar_token({"sub": str(verififcar_email.id)})
     return {"access_token": token, "token_type": "bearer"}
+
+
+#seguranca_rota
+@router.get("/usuarios/me", response_model=schemas.UsuarioResponse)
+def me_rota(usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
+    usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+    if usuario is None:
+        raise HTTPException(status_code=404, detail="Usuario não encontrado")
+    
+    return usuario
