@@ -12,20 +12,20 @@ router = APIRouter() #cria um instancia da lib apirouter
 
 
 
-@router.post("/marcas", status_code=201, response_model=schemas.MarcaResponse) #o @ é um decorator, ele basicamente diz "quando chegar um request POST em /marcas execute essa funcao:"
+@router.post("/marcas", status_code=201, response_model=schemas.MarcaResponse) #o @ é um decorator, ele basicamente diz "quando chegar um request em /marcas execute essa funcao:"
 def criar_marca(marca: schemas.MarcaCreate, db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
     nova_marca = models.Marca( #Depends é o sistema de injeção de dependencia do fastapi 
         nome=marca.nome,
         descricao=marca.descricao
     )
-    db.add(nova_marca)
-    db.commit()
-    db.refresh(nova_marca)
+    db.add(nova_marca) #insere marca no banco
+    db.commit() #salva marca no banco
+    db.refresh(nova_marca) #pega os atributos do banco que não existem no objeto python e sincroniza o objeto com o banco
     return nova_marca
 
 
 #listar todas as marcas
-@router.get("/marcas", response_model=List[schemas.MarcaResponse])
+@router.get("/marcas", response_model=List[schemas.MarcaResponse]) #List serve pra informar q a resposta vai ser uma lista de marcas
 def ver_marcas(db: Session = Depends(get_db)):
     return db.query(models.Marca).all()
 
