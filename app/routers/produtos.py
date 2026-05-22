@@ -12,10 +12,16 @@ router = APIRouter()
 
 
 @router.post("/produtos", status_code=201, response_model=schemas.ProdutoResponse)
-def criar_produto(produto: schemas.ProdutoCreate, db: Session = Depends(get_db)):
+def criar_produto(produto: schemas.ProdutoCreate, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
     marca = db.query(models.Marca).filter(models.Marca.id == produto.marca_id).first()
     if marca is None:
-        raise HTTPException(status_code=404, detail="Marca não encontrada")
+        raise HTTPException(status_code=404, detail="Marca do produto não encontrada")
+    
+    verificar_usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+
+    if verificar_usuario.marca_id != produto.marca_id :
+        raise HTTPException(status_code=403, detail="Só é possivel criar produtos em que você é o dono da marca")
+
     novo_produto = models.Produto(
         nome=produto.nome,
         descricao=produto.descricao,

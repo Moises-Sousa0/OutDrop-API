@@ -10,8 +10,7 @@ from app import auth
 router = APIRouter() #cria um instancia da lib apirouter
  
 
-
-
+#criar marca
 @router.post("/marcas", status_code=201, response_model=schemas.MarcaResponse) #o @ é um decorator, ele basicamente diz "quando chegar um request em /marcas execute essa funcao:"
 def criar_marca(marca: schemas.MarcaCreate, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
     atribuir_marca = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
