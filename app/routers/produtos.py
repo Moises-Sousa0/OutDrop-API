@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models
 from app import schemas
-from datetime import datetime
 from typing import List
+
 
 router = APIRouter()
 
@@ -52,3 +52,18 @@ def deletar_produto(id: int, db: Session = Depends(get_db)):
     db.delete(escolher_produto)
     db.commit()
     return {"message": f"Produto {escolher_produto.nome} foi deletado com sucesso!"}
+
+#atualizar produtos
+@router.put("/produtos/{id}")
+def atualizar_produtos(id: int, produto: schemas.ProdutoUpdate, db: Session = Depends(get_db)):
+    verificar_produto = db.query(models.Produto).filter(models.Produto.id == id).first()
+    if verificar_produto is None:
+        raise HTTPException(status_code=404, detail="Produto não encontrado :(")
+    campos_novos = produto.model_dump()
+
+    for campo, valor in campos_novos.items():
+        setattr(verificar_produto, campo, valor)    
+
+    db.commit()
+    db.refresh(verificar_produto)
+    return verificar_produto

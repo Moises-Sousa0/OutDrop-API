@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, date
 from decimal import Decimal
 
 #schemas é onde pode configurar oq o usuario pode enviar e controlar oq a API mostra
@@ -39,7 +39,7 @@ class ProdutoCreate(BaseModel):
     nome: str
     descricao: str
     preco: Decimal
-    data_lancamento: datetime
+    data_lancamento: date
     marca_id: int
 
 
@@ -48,6 +48,8 @@ class ProdutoResponse(BaseModel):
     nome: str
     descricao: str
     marca_id: int
+    preco: Decimal
+    data_lancamento: date
     class Config:
         from_attributes = True
 
@@ -57,3 +59,5 @@ class TokenResponse(BaseModel):
     token_type: str  #sempre bearer
 
 
+class ProdutoUpdate(ProdutoCreate):
+     pass

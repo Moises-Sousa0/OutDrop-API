@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Numeric, Date
 from datetime import datetime
 from app.database import Base
 
@@ -19,7 +19,7 @@ class Produto(Base):
     nome = Column(String, nullable=False)
     preco = Column(Numeric, nullable=False)
     descricao = Column(String, nullable=False)
-    data_lancamento = Column(DateTime, nullable=False)
+    data_lancamento = Column(Date, nullable=False)
     marca_id = Column(Integer, ForeignKey("marcas.id"), nullable=False)
 
 
@@ -31,3 +31,4 @@ class Usuario(Base):
     email = Column(String, nullable=False, unique=True)
     hash_senha = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
+
