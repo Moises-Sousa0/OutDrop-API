@@ -49,8 +49,21 @@ def me_rota(usuario_id = Depends(auth.verificar_token), db: Session = Depends(ge
     return usuario
 
 @router.put("/usuarios/me", response_model=schemas.UsuarioResponse)
-def me_update(usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
-    usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
-    if usuario is None:
+def me_update(usuario: schemas.UsuarioUpdate, usuario_id =  Depends(auth.verificar_token), db: Session = Depends(get_db)):
+    verificar = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+    if verificar is None:
         raise HTTPException(status_code=404, detail="Usuario não encontrado")
+    infos_pessoais = usuario.model_dump(exclude_unset=True) #pega os dados do usuario e transforma em dicionario, excluindo os campos que não foram enviados
+    if "senha" in infos_pessoais:
+        infos_pessoais["hash_senha"] = pwd_context.hash(
+            infos_pessoais["senha"]
+        )
+        del infos_pessoais["senha"]
     
+    for campo, valor in infos_pessoais.items():
+        setattr(verificar, campo, valor)
+    
+    db.commit()
+    db.refresh(verificar)
+
+    return verificar
