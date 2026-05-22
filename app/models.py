@@ -30,5 +30,17 @@ class Usuario(Base):
     nome = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     hash_senha = Column(String, nullable=False)
+    marca_id = Column(Integer,ForeignKey("marcas.id"))
     created_at = Column(DateTime, default=datetime.now)
 
+
+class Lancamento(Base):
+    __tablename__ = "lancamentos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, nullable=False)
+    data_lancamento = Column(Date, nullable=False)
+    marca_id = Column(Integer, ForeignKey("marcas.id"), nullable=False)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    produto_id = Column(Integer, ForeignKey("produtos.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.now)
