@@ -19,9 +19,7 @@ def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db))
     novo_usuario = models.Usuario(
         nome=usuario.nome,
         email=usuario.email,
-        hash_senha=pwd_context.hash(usuario.senha)
-        
-
+        hash_senha=pwd_context.hash(usuario.senha) #transforma a senha em hash 
     )
     db.add(novo_usuario)
     db.commit()
@@ -43,9 +41,16 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 #seguranca_rota
 @router.get("/usuarios/me", response_model=schemas.UsuarioResponse)
-def me_rota(usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
+def me_rota(usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)): #obriga o token ser validado antes de executar
     usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
     if usuario is None:
         raise HTTPException(status_code=404, detail="Usuario não encontrado")
     
     return usuario
+
+@router.put("/usuarios/me", response_model=schemas.UsuarioResponse)
+def me_update(usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
+    usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+    if usuario is None:
+        raise HTTPException(status_code=404, detail="Usuario não encontrado")
+    

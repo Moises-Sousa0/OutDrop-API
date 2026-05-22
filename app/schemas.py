@@ -1,3 +1,4 @@
+from typing import Optional
 from pydantic import BaseModel, Field
 from datetime import datetime, date
 from decimal import Decimal
@@ -60,4 +61,13 @@ class TokenResponse(BaseModel):
 
 
 class ProdutoUpdate(ProdutoCreate):
-     pass
+    pass
+
+class MarcaUpdate(MarcaCreate):
+    pass
+
+class UsuarioUpdate(BaseModel):
+    nome: Optional[str] = None
+    email: Optional[str] = None
+    senha: Optional[str] = Field(default=None, min_length=8, max_length=72)
+    

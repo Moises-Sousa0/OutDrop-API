@@ -48,3 +48,19 @@ def deletar_marca(id: int, db: Session = Depends(get_db)):
     db.delete(resultado)
     db.commit()
     return {"message": f"Marca {resultado.nome} foi deletada com sucesso!"}
+
+
+#atualizar marca
+@router.put("/marcas/{id}")
+def atualizar_marcas(id: int, marca: schemas.MarcaUpdate, db: Session = Depends(get_db)):
+    verificar_marca = db.query(models.Marca).filter(models.Marca.id == id).first()
+    if verificar_marca is None:
+        raise HTTPException(status_code=404, detail="Marca não encontrada :(")
+    marca_nova = marca.model_dump()
+
+    for campo, valor in marca_nova.items():
+        setattr(verificar_marca, campo, valor)
+
+    db.commit()
+    db.refresh(verificar_marca)
+    return verificar_marca
