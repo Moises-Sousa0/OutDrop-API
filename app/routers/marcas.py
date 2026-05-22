@@ -49,7 +49,7 @@ def buscar_marcas(id: int, db: Session = Depends(get_db)):
 @router.delete("/marcas/{id}")
 def deletar_marca(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
     resultado_marca = db.query(models.Marca).filter(models.Marca.id == id).first()
-    resultado_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == id).first()
+    resultado_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == id, models.Usuario.id == usuario_id).first()
 
     if resultado_marca is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada")
@@ -64,15 +64,21 @@ def deletar_marca(id: int, usuario_id = Depends(auth.verificar_token), db: Sessi
 
 #atualizar marca
 @router.put("/marcas/{id}")
-def atualizar_marcas(id: int, marca: schemas.MarcaUpdate, db: Session = Depends(get_db)):
+def atualizar_marcas(id: int, marca: schemas.MarcaUpdate, usuario_id = Depends(auth.verificar_token),  db: Session = Depends(get_db)):
     verificar_marca = db.query(models.Marca).filter(models.Marca.id == id).first()
+    verificar_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == id, models.Usuario.id == usuario_id).first()
+
     if verificar_marca is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada :(")
-    marca_nova = marca.model_dump()
+    
+    if verificar_usuario is None:
+        raise HTTPException(status_code=403, detail=f"{verificar_marca.nome} não pertence ao usuario")
 
+    marca_nova = marca.model_dump()
     for campo, valor in marca_nova.items():
         setattr(verificar_marca, campo, valor)
 
     db.commit()
     db.refresh(verificar_marca)
+    
     return verificar_marca
