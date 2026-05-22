@@ -74,7 +74,7 @@ def atualizar_marcas(id: int, marca: schemas.MarcaUpdate, usuario_id = Depends(a
     if verificar_usuario is None:
         raise HTTPException(status_code=403, detail=f"{verificar_marca.nome} não pertence ao usuario")
 
-    marca_nova = marca.model_dump()
+    marca_nova = marca.model_dump(exclude_unset=True)
     for campo, valor in marca_nova.items():
         setattr(verificar_marca, campo, valor)
 

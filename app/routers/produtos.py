@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models
 from app import schemas
+from app import auth
 from typing import List
 
 
@@ -43,23 +44,39 @@ def buscar_produtos(id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Produto não encontrado :(")
     return ver_produtos
 
+
 #deletar produtos
 @router.delete("/produtos/{id}")
-def deletar_produto(id: int, db: Session = Depends(get_db)):
+def deletar_produto(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
     escolher_produto = db.query(models.Produto).filter(models.Produto.id == id).first()
+
     if escolher_produto is None:
-            raise HTTPException(status_code=404, detail="Produto não encontrado :(")
+        raise HTTPException(status_code=404, detail="Produto não encontrado :(")
+    
+    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.marca_id == escolher_produto.marca_id, models.Usuario.id == usuario_id).first()
+
+    if verificar_autenticacao is None:
+        raise HTTPException(status_code=403, detail=f"{escolher_produto.nome} não pertence ao usuario")
+
     db.delete(escolher_produto)
     db.commit()
     return {"message": f"Produto {escolher_produto.nome} foi deletado com sucesso!"}
 
+
 #atualizar produtos
 @router.put("/produtos/{id}")
-def atualizar_produtos(id: int, produto: schemas.ProdutoUpdate, db: Session = Depends(get_db)):
+def atualizar_produtos(id: int, produto: schemas.ProdutoUpdate, usuario_id = Depends(auth.verificar_token),  db: Session = Depends(get_db)):
     verificar_produto = db.query(models.Produto).filter(models.Produto.id == id).first()
+    
     if verificar_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado :(")
-    campos_novos = produto.model_dump()
+    
+    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.marca_id == verificar_produto.marca_id, models.Usuario.id == usuario_id).first()
+
+    if verificar_autenticacao is None:
+        raise HTTPException(status_code=403, detail=f"{verificar_produto.nome} não pertence ao usuario")
+
+    campos_novos = produto.model_dump() #transforma o objeto produto em um dicionario
 
     for campo, valor in campos_novos.items():
         setattr(verificar_produto, campo, valor)    
