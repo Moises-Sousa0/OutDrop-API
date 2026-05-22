@@ -4,7 +4,7 @@ from app.database import get_db
 from app import models
 from app import schemas
 from typing import List
-
+from app import auth
 
 
 router = APIRouter() #cria um instancia da lib apirouter
@@ -13,14 +13,18 @@ router = APIRouter() #cria um instancia da lib apirouter
 
 
 @router.post("/marcas", status_code=201, response_model=schemas.MarcaResponse) #o @ é um decorator, ele basicamente diz "quando chegar um request em /marcas execute essa funcao:"
-def criar_marca(marca: schemas.MarcaCreate, db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
+def criar_marca(marca: schemas.MarcaCreate, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
+    atribuir_marca = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
     nova_marca = models.Marca( #Depends é o sistema de injeção de dependencia do fastapi 
         nome=marca.nome,
-        descricao=marca.descricao
+        descricao=marca.descricao,
     )
     db.add(nova_marca) #insere marca no banco
     db.commit() #salva marca no banco
     db.refresh(nova_marca) #pega os atributos do banco que não existem no objeto python e sincroniza o objeto com o banco
+    atribuir_marca.marca_id=nova_marca.id
+    db.commit()
+    db.refresh(atribuir_marca)
     return nova_marca
 
 
