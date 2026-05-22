@@ -15,6 +15,8 @@ router = APIRouter() #cria um instancia da lib apirouter
 @router.post("/marcas", status_code=201, response_model=schemas.MarcaResponse) #o @ é um decorator, ele basicamente diz "quando chegar um request em /marcas execute essa funcao:"
 def criar_marca(marca: schemas.MarcaCreate, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)): #parametro marca pede o padrao da classe marcacreate, nome e descric
     atribuir_marca = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+    if atribuir_marca.marca_id is not None:
+        raise HTTPException(status_code=403, detail="Não é possivel ter mais de uma marca por usuario ainda...")
     nova_marca = models.Marca( #Depends é o sistema de injeção de dependencia do fastapi 
         nome=marca.nome,
         descricao=marca.descricao,
@@ -45,14 +47,20 @@ def buscar_marcas(id: int, db: Session = Depends(get_db)):
 
 #deletar marca especifica
 @router.delete("/marcas/{id}")
-def deletar_marca(id: int, db: Session = Depends(get_db)):
-    resultado = db.query(models.Marca).filter(models.Marca.id == id).first()
-    if resultado is None:
-        raise HTTPException(status_code=404, detail="Marca não encontrada")
-    db.delete(resultado)
-    db.commit()
-    return {"message": f"Marca {resultado.nome} foi deletada com sucesso!"}
+def deletar_marca(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
+    resultado_marca = db.query(models.Marca).filter(models.Marca.id == id).first()
+    resultado_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == id).first()
 
+    if resultado_marca is None:
+        raise HTTPException(status_code=404, detail="Marca não encontrada")
+    
+    if resultado_usuario is None:
+        raise HTTPException(status_code=403, detail=f"{resultado_marca.nome} não pertence ao usuario") 
+
+    resultado_usuario.marca_id = None    
+    db.delete(resultado_marca)
+    db.commit()
+    return {"message": f"Marca {resultado_marca.nome} foi deletada com sucesso!"}
 
 #atualizar marca
 @router.put("/marcas/{id}")
