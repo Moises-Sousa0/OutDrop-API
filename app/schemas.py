@@ -90,3 +90,12 @@ class LancamentoResponse(BaseModel):
     class Config:
         from_attributes = True #pydantic agr vai aceitar objetos do sqlalchemy
  
+
+
+class LancamentoUpdate(LancamentoCreate):
+    nome: Optional[str] = None
+    data_lancamento: Optional[date] = None
+    produto_id: Optional[int] = None
+
+
+

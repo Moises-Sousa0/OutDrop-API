@@ -16,7 +16,7 @@ def ver_lancamentos(db: Session = Depends(get_db)):
 
 #listar lancamento especifico
 @router.get("/lancamentos/{id}", response_model=schemas.LancamentoResponse)
-def ver_lancamentos(id: int, db: Session = Depends(get_db)):
+def ver_lancamento(id: int, db: Session = Depends(get_db)):
     listar_lanc = db.query(models.Lancamento).filter(models.Lancamento.id == id).first()
     if listar_lanc is None:
         raise HTTPException(status_code=404, detail="Lançamento não encontrado :(")
