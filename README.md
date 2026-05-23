@@ -1,35 +1,39 @@
-# OUTDROP API
-API para gerenciamento de drops de marcas de roupas - sendo possível cadastrar marcas, produtos e lançamentos.
+OUTDROP API
+API para gerenciamento de drops de marcas de roupas — sendo possível cadastrar marcas, produtos e lançamentos.
+Tecnologias
 
+Python
+FastAPI
+PostgreSQL
+SQLAlchemy & psycopg2
+Pydantic
+Passlib (com Bcrypt) & Python-Jose (JWT)
+Python-dotenv
 
-## Tecnologias
-- Python
-- FastAPI
-- PostgreSQL 
-- SQLAlchemy & psycopg2
-- Pydantic
-- Passlib (com Bcrypt) & Python-Jose (JWT)
-- Python-dotenv
+Rotas disponíveis
 
-## Rotas disponiveis
-- GET /health
-- POST /marcas
-- GET /marcas
-- GET /marcas/{id}
-- PUT /marcas/{id}
-- DELETE /marcas/{id}
-- POST /produtos
-- GET /produtos
-- GET /produtos/{id}
-- PUT /produtos/{id}
-- DELETE /produtos/{id}
-- POST /usuarios
-- POST /login
+GET /health
+POST /marcas — protegida
+GET /marcas
+GET /marcas/{id}
+PUT /marcas/{id} — protegida
+DELETE /marcas/{id} — protegida
+POST /produtos — protegida
+GET /produtos
+GET /produtos/{id}
+PUT /produtos/{id} — protegida
+DELETE /produtos/{id} — protegida
+POST /usuarios
+POST /login
+GET /usuarios/me — protegida
+PUT /usuarios/me — protegida
+POST /lancamentos — protegida
+GET /lancamentos
+GET /lancamentos/{id}
 
-## Próximos passos
-- Implementar a função verificar_token 
-- Proteger rotas que exigem autenticação 
-- Relacionamentos e autorização
-- Tratamento de erros
-- Deploy 
+Próximos passos
 
+DELETE e PUT de Lançamentos
+Tratamento de erros global
+Swagger documentado
+Deploy
