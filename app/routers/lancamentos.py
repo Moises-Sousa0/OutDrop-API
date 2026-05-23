@@ -75,3 +75,20 @@ def atualizar_lancamento(id: int, lancamento: schemas.LancamentoUpdate, usuario_
     db.commit()
     db.refresh(verificar_lancamento)
     return verificar_lancamento
+
+
+#deletar lancamento
+@router.delete("/lancamentos/{id}")
+def deletar_lancamento(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
+    verificar_lancamento = db.query(models.Lancamento).filter(models.Lancamento.id == id).first()
+
+    if verificar_lancamento is None:
+        raise HTTPException(status_code=404, detail="Esse lançamento não existe :(")
+    
+    verificar_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == verificar_lancamento.marca_id, models.Usuario.id == usuario_id).first()
+    if verificar_usuario is None:
+        raise HTTPException(status_code=403, detail="Esse lançamento não pertence ao usuario")
+    
+    db.delete(verificar_lancamento)
+    db.commit()
+    return {"message": f"lancamento {verificar_lancamento.nome} foi deletado com sucesso"}

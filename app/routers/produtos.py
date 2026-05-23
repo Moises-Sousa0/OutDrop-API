@@ -52,7 +52,7 @@ def buscar_produtos(id: int, db: Session = Depends(get_db)):
 
 
 #deletar produtos
-@router.delete("/produtos/{id}")
+@router.delete("/produtos/{id}", status_code=204)
 def deletar_produto(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
     escolher_produto = db.query(models.Produto).filter(models.Produto.id == id).first()
 
@@ -66,7 +66,6 @@ def deletar_produto(id: int, usuario_id = Depends(auth.verificar_token), db: Ses
 
     db.delete(escolher_produto)
     db.commit()
-    return {"message": f"Produto {escolher_produto.nome} foi deletado com sucesso!"}
 
 
 #atualizar produtos
@@ -82,7 +81,7 @@ def atualizar_produtos(id: int, produto: schemas.ProdutoUpdate, usuario_id = Dep
     if verificar_autenticacao is None:
         raise HTTPException(status_code=403, detail=f"{verificar_produto.nome} não pertence ao usuario")
 
-    campos_novos = produto.model_dump() #transforma o objeto produto em um dicionario
+    campos_novos = produto.model_dump(exclude_unset=True) #transforma o objeto produto em um dicionario
 
     for campo, valor in campos_novos.items():
         setattr(verificar_produto, campo, valor)    
