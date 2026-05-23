@@ -1,39 +1,50 @@
-OUTDROP API
+# OUTDROP API
+
 API para gerenciamento de drops de marcas de roupas — sendo possível cadastrar marcas, produtos e lançamentos.
-Tecnologias
 
-Python
-FastAPI
-PostgreSQL
-SQLAlchemy & psycopg2
-Pydantic
-Passlib (com Bcrypt) & Python-Jose (JWT)
-Python-dotenv
+## Tecnologias
 
-Rotas disponíveis
+- Python
+- FastAPI
+- PostgreSQL
+- SQLAlchemy & psycopg2
+- Pydantic
+- Passlib (com Bcrypt) & Python-Jose (JWT)
+- Python-dotenv
 
-GET /health
-POST /marcas — protegida
-GET /marcas
-GET /marcas/{id}
-PUT /marcas/{id} — protegida
-DELETE /marcas/{id} — protegida
-POST /produtos — protegida
-GET /produtos
-GET /produtos/{id}
-PUT /produtos/{id} — protegida
-DELETE /produtos/{id} — protegida
-POST /usuarios
-POST /login
-GET /usuarios/me — protegida
-PUT /usuarios/me — protegida
-POST /lancamentos — protegida
-GET /lancamentos
-GET /lancamentos/{id}
+## Rotas disponíveis
 
-Próximos passos
+### Marcas
+- `POST /marcas` — protegida
+- `GET /marcas`
+- `GET /marcas/{id}`
+- `PUT /marcas/{id}` — protegida
+- `DELETE /marcas/{id}` — protegida
 
-DELETE e PUT de Lançamentos
-Tratamento de erros global
-Swagger documentado
-Deploy
+### Produtos
+- `POST /produtos` — protegida
+- `GET /produtos`
+- `GET /produtos/{id}`
+- `PUT /produtos/{id}` — protegida
+- `DELETE /produtos/{id}` — protegida
+
+### Usuários
+- `POST /usuarios`
+- `POST /login`
+- `GET /usuarios/me` — protegida
+- `PUT /usuarios/me` — protegida
+
+### Lançamentos
+- `POST /lancamentos` — protegida
+- `GET /lancamentos`
+- `GET /lancamentos/{id}`
+
+### Outros
+- `GET /health`
+
+## Próximos passos
+
+- DELETE e PUT de lançamentos
+- Tratamento de erros global
+- Swagger documentado
+- Deploy
