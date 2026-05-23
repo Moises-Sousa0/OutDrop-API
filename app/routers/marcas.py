@@ -45,7 +45,7 @@ def buscar_marcas(id: int, db: Session = Depends(get_db)):
         
 
 #deletar marca especifica
-@router.delete("/marcas/{id}")
+@router.delete("/marcas/{id}", status_code=204)
 def deletar_marca(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
     resultado_marca = db.query(models.Marca).filter(models.Marca.id == id).first()
     resultado_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == id, models.Usuario.id == usuario_id).first()
@@ -59,7 +59,7 @@ def deletar_marca(id: int, usuario_id = Depends(auth.verificar_token), db: Sessi
     resultado_usuario.marca_id = None    
     db.delete(resultado_marca)
     db.commit()
-    return {"message": f"Marca {resultado_marca.nome} foi deletada com sucesso!"}
+
 
 #atualizar marca
 @router.put("/marcas/{id}")
