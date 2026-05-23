@@ -71,3 +71,22 @@ class UsuarioUpdate(BaseModel):
     email: Optional[str] = None
     senha: Optional[str] = Field(default=None, min_length=8, max_length=72)
     
+
+class LancamentoCreate(BaseModel):
+    nome: str
+    data_lancamento: date
+    produto_id: int
+
+
+
+class LancamentoResponse(BaseModel):
+    id: int
+    nome: str
+    data_lancamento: date
+    marca_id: int
+    usuario_id: int
+    produto_id: int
+    created_at: datetime
+    class Config:
+        from_attributes = True #pydantic agr vai aceitar objetos do sqlalchemy
+ 
