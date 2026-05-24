@@ -59,9 +59,9 @@ def deletar_produto(id: int, usuario_id = Depends(auth.verificar_token), db: Ses
     if escolher_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado :(")
     
-    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.marca_id == escolher_produto.marca_id, models.Usuario.id == usuario_id).first()
+    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
 
-    if verificar_autenticacao is None:
+    if verificar_autenticacao.marca_id != escolher_produto.marca_id:
         raise HTTPException(status_code=403, detail=f"{escolher_produto.nome} não pertence ao usuario")
 
     db.delete(escolher_produto)
@@ -76,9 +76,9 @@ def atualizar_produtos(id: int, produto: schemas.ProdutoUpdate, usuario_id = Dep
     if verificar_produto is None:
         raise HTTPException(status_code=404, detail="Produto não encontrado :(")
     
-    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.marca_id == verificar_produto.marca_id, models.Usuario.id == usuario_id).first()
+    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
 
-    if verificar_autenticacao is None:
+    if verificar_autenticacao.marca_id != verificar_produto.marca_id:
         raise HTTPException(status_code=403, detail=f"{verificar_produto.nome} não pertence ao usuario")
 
     campos_novos = produto.model_dump(exclude_unset=True) #transforma o objeto produto em um dicionario

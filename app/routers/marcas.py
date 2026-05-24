@@ -48,12 +48,12 @@ def buscar_marcas(id: int, db: Session = Depends(get_db)):
 @router.delete("/marcas/{id}", status_code=204)
 def deletar_marca(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
     resultado_marca = db.query(models.Marca).filter(models.Marca.id == id).first()
-    resultado_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == id, models.Usuario.id == usuario_id).first()
+    resultado_usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
 
     if resultado_marca is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada")
     
-    if resultado_usuario is None:
+    if resultado_usuario.marca_id != resultado_marca.id:
         raise HTTPException(status_code=403, detail=f"{resultado_marca.nome} não pertence ao usuario") 
 
     resultado_usuario.marca_id = None    
@@ -65,7 +65,7 @@ def deletar_marca(id: int, usuario_id = Depends(auth.verificar_token), db: Sessi
 @router.put("/marcas/{id}")
 def atualizar_marcas(id: int, marca: schemas.MarcaUpdate, usuario_id = Depends(auth.verificar_token),  db: Session = Depends(get_db)):
     verificar_marca = db.query(models.Marca).filter(models.Marca.id == id).first()
-    verificar_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == id, models.Usuario.id == usuario_id).first()
+    verificar_usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
 
     if verificar_marca is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada :(")

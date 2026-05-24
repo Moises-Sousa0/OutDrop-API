@@ -16,6 +16,6 @@ Base = declarative_base() #classe base q todos models herdam, permite enxegar as
 def get_db():
     db = SessionLocal()
     try:
-        yield db
+        yield db #yield pausa a funcao, entrega o valor (sessao) e quando termina volta para a função de onde parou
     finally:
         db.close()

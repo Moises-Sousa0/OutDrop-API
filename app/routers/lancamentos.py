@@ -56,8 +56,8 @@ def atualizar_lancamento(id: int, lancamento: schemas.LancamentoUpdate, usuario_
     if verificar_lancamento is None:
         raise HTTPException(status_code=404, detail="Esse lancamento não existe")
     
-    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.marca_id == verificar_lancamento.marca_id, models.Usuario.id == usuario_id).first()
-    if verificar_autenticacao is None:
+    verificar_autenticacao = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+    if verificar_autenticacao.marca_id != verificar_lancamento.marca_id:
         raise HTTPException(status_code=403, detail=f"{verificar_lancamento.nome} não pertence ao seu usuario")
     
     campos_novos = lancamento.model_dump(exclude_unset=True)
@@ -78,17 +78,16 @@ def atualizar_lancamento(id: int, lancamento: schemas.LancamentoUpdate, usuario_
 
 
 #deletar lancamento
-@router.delete("/lancamentos/{id}")
+@router.delete("/lancamentos/{id}", status_code=204)
 def deletar_lancamento(id: int, usuario_id = Depends(auth.verificar_token), db: Session = Depends(get_db)):
     verificar_lancamento = db.query(models.Lancamento).filter(models.Lancamento.id == id).first()
 
     if verificar_lancamento is None:
         raise HTTPException(status_code=404, detail="Esse lançamento não existe :(")
     
-    verificar_usuario = db.query(models.Usuario).filter(models.Usuario.marca_id == verificar_lancamento.marca_id, models.Usuario.id == usuario_id).first()
-    if verificar_usuario is None:
+    verificar_usuario = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+    if verificar_usuario.marca_id != verificar_lancamento.marca_id:
         raise HTTPException(status_code=403, detail="Esse lançamento não pertence ao usuario")
     
     db.delete(verificar_lancamento)
     db.commit()
-    return {"message": f"lancamento {verificar_lancamento.nome} foi deletado com sucesso"}
