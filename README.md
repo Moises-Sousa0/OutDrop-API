@@ -1,6 +1,8 @@
 # OutDrop API
 
-API para gerenciamento de drops de marcas de roupas — sendo possível cadastrar marcas, produtos e lançamentos.
+API REST desenvolvida para estudo de backend com Python e FastAPI, 
+simula o gerenciamento de drops de marcas de roupas, 
+com cadastro de marcas, produtos e lançamentos.
 
 🔗 **API em produção:** https://outdrop-api-production.up.railway.app/docs
 
@@ -76,7 +78,7 @@ API para gerenciamento de drops de marcas de roupas — sendo possível cadastra
 
 1. Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/outdrop-api
+git clone https://github.com/Moises-Sousa0/OutDrop-API
 cd outdrop-api
 ```
 
