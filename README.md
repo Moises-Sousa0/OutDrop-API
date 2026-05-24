@@ -76,7 +76,7 @@ API para gerenciamento de drops de marcas de roupas — sendo possível cadastra
 
 1. Clone o repositório
 ```bash
-git clone https://github.com/seu-usuario/outdrop-api
+git https://github.com/Moises-Sousa0/OutDrop-API
 cd outdrop-api
 ```
 
