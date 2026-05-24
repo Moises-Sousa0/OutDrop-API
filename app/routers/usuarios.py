@@ -17,6 +17,12 @@ def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db))
     verificar_email = db.query(models.Usuario).filter(models.Usuario.email == usuario.email).first()
     if verificar_email is not None:
         raise HTTPException(status_code=400, detail="Já existe uma conta com esse email")
+    
+    verificar_nome = db.query(models.Usuario).filter(models.Usuario.nome == usuario.nome).first()
+    if verificar_nome is not None:
+        raise HTTPException(status_code=400, detail="Já existe uma conta com esse nome de usuario")
+
+
     novo_usuario = models.Usuario(
         nome=usuario.nome,
         email=usuario.email,

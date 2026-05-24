@@ -26,7 +26,7 @@ class Usuario(Base):
     __tablename__ = "usuarios"
 
     id = Column(Integer, primary_key=True, index=True)
-    nome = Column(String, nullable=False)
+    nome = Column(String, nullable=False, unique=True)
     email = Column(String, nullable=False, unique=True)
     hash_senha = Column(String, nullable=False)
     marca_id = Column(Integer,ForeignKey("marcas.id"))
