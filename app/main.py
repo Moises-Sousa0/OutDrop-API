@@ -16,10 +16,10 @@ app = FastAPI() #aplicacao printicipal
 models.Base.metadata.create_all(bind=engine) #chama o sqlaclhemy e manda verificar todos os modelos que existem e cria as tabaelas que ainda n existem
 
 
-app.include_router(marcas.router) #conecta o router do marcas.py na aplicacao principal (main.py) (PEGA TODAS AS ROTAS DO ARQUIVOS marcas.py)
-app.include_router(produtos.router) #conecta o router do produtos.py na aplicacao principal (main.py) (PEGA TODAS AS ROTAS DO ARQUIVOS produtos.py)
-app.include_router(usuarios.router)
-app.include_router(lancamentos.router)
+app.include_router(marcas.router, tags=["Marcas"]) #conecta o router do marcas.py na aplicacao principal (main.py) (PEGA TODAS AS ROTAS DO ARQUIVOS marcas.py)
+app.include_router(produtos.router, tags=["Produtos"]) #conecta o router do produtos.py na aplicacao principal (main.py) (PEGA TODAS AS ROTAS DO ARQUIVOS produtos.py)
+app.include_router(usuarios.router, tags=["Usuarios"])
+app.include_router(lancamentos.router, tags=["Lancamentos"])
 
 @app.exception_handler(OperationalError)
 async def db_error_handler(request: Request, exc: OperationalError):
@@ -48,7 +48,7 @@ async def error_404(request: Request, exc: HTTPException):
             content={"detail": exc.detail}
         )  
 
-@app.get("/health") #cria rota get
+@app.get("/health", tags=["Health"]) #cria rota get
 def health_check():
     return{"status": "Ok"}
 
