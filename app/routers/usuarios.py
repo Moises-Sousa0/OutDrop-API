@@ -6,6 +6,7 @@ from app import schemas
 from passlib.context import CryptContext 
 from fastapi.security import OAuth2PasswordRequestForm
 from app import auth
+from sqlalchemy import or_
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 router = APIRouter()
@@ -29,13 +30,13 @@ def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db))
 #login usuarios
 @router.post("/login", response_model=schemas.TokenResponse)  
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    verififcar_email = db.query(models.Usuario).filter(models.Usuario.email == form_data.username).first()
-    if verififcar_email is None:
+    verificar_username = db.query(models.Usuario).filter(or_(models.Usuario.email == form_data.username, models.Usuario.nome == form_data.username)).first()
+    if verificar_username is None:
         raise HTTPException(status_code=401, detail="Usuario ou senha errados")
-    senha_correta = pwd_context.verify(form_data.password, verififcar_email.hash_senha )
+    senha_correta = pwd_context.verify(form_data.password, verificar_username.hash_senha )
     if not senha_correta:
         raise HTTPException(status_code=401, detail="Usuario ou senha errados")
-    token = auth.criar_token({"sub": str(verififcar_email.id)})
+    token = auth.criar_token({"sub": str(verificar_username.id)})
     return {"access_token": token, "token_type": "bearer"}
 
 
