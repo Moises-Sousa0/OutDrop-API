@@ -11,7 +11,6 @@ class Marca(Base):
     descricao = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.now)
 
-
 class Produto(Base):
     __tablename__ = "produtos"
 

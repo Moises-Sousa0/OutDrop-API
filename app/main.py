@@ -13,7 +13,7 @@ from app import models
 
 app = FastAPI() #aplicacao printicipal
 
-models.Base.metadata.create_all(bind=engine) #chama o sqlaclhemy e manda verificar todos os modelos que existem e cria as tabaelas que ainda n existem
+models.Base.metadata.create_all(bind=engine) #chama o sqlaclhemy e manda verificar todos os modelos que existem e cria as tabaelas que ainda n existem/deveriam existir
 
 
 app.include_router(marcas.router, tags=["Marcas"]) #conecta o router do marcas.py na aplicacao principal (main.py) (PEGA TODAS AS ROTAS DO ARQUIVOS marcas.py)

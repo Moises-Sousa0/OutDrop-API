@@ -19,7 +19,7 @@ def criar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db))
     novo_usuario = models.Usuario(
         nome=usuario.nome,
         email=usuario.email,
-        hash_senha=pwd_context.hash(usuario.senha) #transforma a senha em hash 
+        hash_senha=pwd_context.hash(usuario.senha) #transforma a senha em hash ah en
     )
     db.add(novo_usuario)
     db.commit()

@@ -70,7 +70,7 @@ def atualizar_marcas(id: int, marca: schemas.MarcaUpdate, usuario_id = Depends(a
     if verificar_marca is None:
         raise HTTPException(status_code=404, detail="Marca não encontrada :(")
     
-    if verificar_usuario is None:
+    if verificar_usuario.marca_id != verificar_marca.id:
         raise HTTPException(status_code=403, detail=f"{verificar_marca.nome} não pertence ao usuario")
 
     marca_nova = marca.model_dump(exclude_unset=True)
